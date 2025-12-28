@@ -1,0 +1,17 @@
+schema_version = "1.0.0"
+
+id = "if0xit_bim_toolbox_theme_classic_dark_b5"
+version = "1.1.0"
+name = "BIM Toolbox Classic Dark (B5)"
+tagline = "Professional classic dark theme for Blender 5.0+"
+maintainer = "iF0xit"
+type = "theme"
+website = "https://github.com/iF0xit/bim-toolbox-theme-classic"
+
+blender_version_min = "5.0.0"
+
+license = [
+    "SPDX:GPL-3.0-or-later",
+]
+
+[permissions]

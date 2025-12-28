@@ -1,0 +1,12 @@
+# Ensure consistent line endings
+* text=auto
+
+# Blender theme files
+*.xml text
+*.toml text
+
+# Documentation
+*.md text
+
+# Ensure ZIP files are treated as binary
+*.zip binary

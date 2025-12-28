@@ -1,0 +1,18 @@
+schema_version = "1.0.0"
+
+id = "if0xit_bim_toolbox_theme_classic_dark_b4"
+version = "1.1.0"
+name = "BIM Toolbox Classic Dark (B4)"
+tagline = "Professional classic dark theme for Blender 4.x"
+maintainer = "iF0xit"
+type = "theme"
+website = "https://github.com/iF0xit/bim-toolbox-theme-classic"
+
+blender_version_min = "4.2.0"
+blender_version_max = "4.9.0"
+
+license = [
+    "SPDX:GPL-3.0-or-later",
+]
+
+[permissions]

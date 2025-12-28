@@ -1,0 +1,16 @@
+name: "\U0001F4A1 Feature Request"
+description: "Submit an idea or suggestion"
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: "Description"
+      description: "What would you like? What problem would it solve?"
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: "Additional Context (optional)"
+      description: "Screenshots, mockups, or links to similar themes."

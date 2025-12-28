@@ -1,0 +1,107 @@
+name: Build and Release Themes
+
+on:
+  push:
+    branches:
+      - master
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Get version info
+        id: version
+        run: |
+          VERSION=$(date +'%Y.%m.%d')
+          COMMIT_SHORT=$(git rev-parse --short HEAD)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "commit=$COMMIT_SHORT" >> $GITHUB_OUTPUT
+          echo "tag=v$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Delete all existing releases
+        run: |
+          for tag in $(gh release list --json tagName -q '.[].tagName'); do
+            echo "Deleting release $tag"
+            gh release delete "$tag" --yes --cleanup-tag || true
+          done
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create theme ZIPs
+        run: |
+          mkdir -p dist
+          VERSION=${{ steps.version.outputs.version }}
+
+          declare -A zip_names=(
+            ["classic_BlenderV4"]="bim-toolbox_theme-classic_BlenderV4_v${VERSION}"
+            ["classic-light_BlenderV4"]="bim-toolbox_theme-classic-light_BlenderV4_v${VERSION}"
+            ["classic_BlenderV5"]="bim-toolbox_theme-classic_BlenderV5_v${VERSION}"
+            ["classic-light_BlenderV5"]="bim-toolbox_theme-classic-light_BlenderV5_v${VERSION}"
+          )
+
+          for theme_dir in */; do
+            if [[ "$theme_dir" == .* ]] || [[ ! -f "${theme_dir}blender_manifest.toml" ]]; then
+              continue
+            fi
+
+            theme_name="${theme_dir%/}"
+            zip_name="${zip_names[$theme_name]}"
+
+            if [[ -z "$zip_name" ]]; then
+              continue
+            fi
+
+            echo "Creating: ${zip_name}.zip"
+            cd "$theme_dir"
+            zip -r "../dist/${zip_name}.zip" . -x ".*"
+            cd ..
+          done
+
+          ls -la dist/
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          name: "Release ${{ steps.version.outputs.version }}"
+          body: |
+            ## BIM Toolbox Classic Theme Release
+
+            **Version:** ${{ steps.version.outputs.version }}
+            **Commit:** ${{ steps.version.outputs.commit }}
+
+            ### Included Themes
+
+            | Theme | Blender Version |
+            |-------|-----------------|
+            | bim-toolbox_theme-classic_BlenderV4 | 4.2 - 4.9 |
+            | bim-toolbox_theme-classic-light_BlenderV4 | 4.2 - 4.9 |
+            | bim-toolbox_theme-classic_BlenderV5 | 5.0+ |
+            | bim-toolbox_theme-classic-light_BlenderV5 | 5.0+ |
+
+            ### Installation
+
+            **Method 1 - Drag & Drop:**
+            Drag the ZIP file onto the Blender window
+
+            **Method 2 - Install from Disk:**
+            1. In Blender: Edit > Preferences > Get Extensions
+            2. Click the arrow in the top right > Install from Disk
+            3. Select ZIP file
+
+            ---
+            *Automatically created by GitHub Actions*
+          files: dist/*.zip
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

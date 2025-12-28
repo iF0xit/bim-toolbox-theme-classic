@@ -1,0 +1,48 @@
+name: "\U0001F41B Bug Report"
+description: "Report a problem with the theme"
+labels: ["bug"]
+body:
+  - type: dropdown
+    id: theme-variant
+    attributes:
+      label: "Theme Variant"
+      options:
+        - "Classic Dark"
+        - "Classic Light"
+    validations:
+      required: true
+  - type: dropdown
+    id: blender-version
+    attributes:
+      label: "Blender Version"
+      options:
+        - "4.2"
+        - "4.3"
+        - "4.4"
+        - "4.5"
+        - "5.0"
+        - "5.1+"
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: "Operating System"
+      options:
+        - "Windows"
+        - "macOS"
+        - "Linux"
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: "Description"
+      description: "What happened? What did you expect?"
+    validations:
+      required: true
+  - type: textarea
+    id: screenshot
+    attributes:
+      label: "Screenshot (optional)"
+      description: "A screenshot helps with troubleshooting."
